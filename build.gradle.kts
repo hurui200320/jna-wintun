@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "info.skyblond"
-version = "1.0.0"
+version = "v1.0.0"
 
 repositories {
     mavenCentral()
