@@ -1,12 +1,14 @@
 package info.skyblond.jna.wintun
 
 import com.sun.jna.Library
+import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.WString
 import com.sun.jna.platform.win32.Guid
 import com.sun.jna.platform.win32.Kernel32
 import com.sun.jna.platform.win32.WinNT
 import com.sun.jna.ptr.IntByReference
+import com.sun.jna.ptr.LongByReference
 
 /**
  * Raw JNA binding for lib wintun.
@@ -16,6 +18,9 @@ interface WintunLib : Library {
 
     // constants
     companion object {
+        @JvmStatic
+        val INSTANCE: WintunLib = Native.load("wintun", WintunLib::class.java)
+
         /**
          * Minimum ring capacity: 128KiB
          * */
@@ -97,7 +102,7 @@ interface WintunLib : Library {
      * @param adapter Adapter handle obtained with WintunCreateAdapter or WintunOpenAdapter
      * @param liud Pointer to LUID to receive adapter LUID.
      */
-    fun WintunGetAdapterLUID(adapter: WintunAdapterHandler, liud: WinNT.LUID)
+    fun WintunGetAdapterLUID(adapter: WintunAdapterHandler, liud: LongByReference)
 
     // ------------------------------ END Adapter ------------------------------
 

@@ -1,19 +1,17 @@
 package info.skyblond.jna
 
-import com.sun.jna.Native
 import com.sun.jna.platform.win32.Guid
-import info.skyblond.jna.wintun.NativeException
-import info.skyblond.jna.wintun.WintunAdapter
-import info.skyblond.jna.wintun.WintunLib
-import info.skyblond.jna.wintun.WintunSession
+import info.skyblond.jna.wintun.*
 import org.pcap4j.packet.*
 import org.pcap4j.packet.namednumber.IcmpV6Code
 import org.pcap4j.packet.namednumber.IcmpV6Type
 import org.pcap4j.packet.namednumber.IpNumber
 import org.pcap4j.packet.namednumber.IpVersion
 import java.io.EOFException
+import java.net.Inet6Address
 import kotlin.concurrent.thread
 import kotlin.experimental.and
+import kotlin.random.Random
 
 /**
  * In this demo, we will create a tun device,
@@ -26,10 +24,9 @@ import kotlin.experimental.and
  * Note: You need run this as admin to create/operate with tun devices.
  * */
 object WintunPingDemo {
-    private val wintun: WintunLib = Native.load(
-        "wintun",
-        WintunLib::class.java
-    )
+
+    @Volatile
+    private var ip = Inet6Address.getByName("0020::100")
 
     private fun handlePacket(session: WintunSession, packet: ByteArray) {
         val isV6 = packet[0].and(0xf0.toByte()) == 0x60.toByte()
@@ -79,29 +76,30 @@ object WintunPingDemo {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        println("Current wintun version: ${wintun.WintunGetRunningDriverVersion()}")
+        println("Current wintun version: ${WintunLib.INSTANCE.WintunGetRunningDriverVersion()}")
         val guid = Guid.GUID.newGuid().toGuidString()
-        val adapter = WintunAdapter(wintun, "Wintun Demo Adapter", "Wintun", guid)
+        val adapter = WintunAdapter("Wintun Demo Adapter", "Wintun", guid)
         // Ring size: 8MB
         val session = adapter.newSession(0x800000)
 
-        Runtime.getRuntime().exec(
-            arrayOf(
-                "netsh",
-                "interface",
-                "ipv6",
-                "add",
-                "address",
-                "interface=${adapter.name}",
-                "address=0020::100/7"
-            )
-        )
+        thread {
+            while (true) {
+                try { // clean up old ip
+                    adapter.dissociateIp(ip)
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                }
 
-        // netsh interface ipv6 add address interface="Wintun Demo Adapter" address="0020::100/7"
-        // netsh interface ipv6 delete address interface="Wintun Demo Adapter" address="0020::100/7"
-        // netsh interface ipv6 show address interface="Wintun Demo Adapter"
+                val random = Random.nextInt(5, 200)
+                ip = Inet6Address.getByName("0020::$random")
+                println("Set ip to: $ip")
+                adapter.associateIp(
+                    AdapterIPAddress(ip = ip, prefixLength = 7u)
+                )
 
-        // TODO: How to set ip?
+                Thread.sleep(1000 * 60)
+            }
+        }
 
         val t = thread {
             try {
