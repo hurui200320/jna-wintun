@@ -1,7 +1,6 @@
 # jna-wintun
 
-[![Release](https://jitpack.io/v/info.skyblond/jna-wintun.svg?style=flat-square)]
-(https://jitpack.io/#info.skyblond/jna-wintun)
+![Release](https://jitpack.io/v/info.skyblond/jna-wintun.svg?style=flat-square)
 
 jna-wintun is a wrapper for [wintun](https://www.wintun.net), which is a handy library
 for creating and operating tun devices on Windows. This wrapper implemented an OOP
@@ -21,7 +20,7 @@ And it's messy. This project aims to deliver a simple and OOP-style methodology.
 
 ## How to use
 
-You may use the jitpack for maven distribution, and you can also build yourself.
+You may use the [jitpack](https://jitpack.io/#info.skyblond/jna-wintun) for maven distribution, and you can also build yourself.
 
 **Note: This repo does NOT contain the dll from wintun, you have to download it
 and put it somewhere. See jna's document to find out how to load your dll.**
