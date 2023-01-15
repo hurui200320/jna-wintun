@@ -1,5 +1,8 @@
 # jna-wintun
 
+[![Release](https://jitpack.io/v/info.skyblond/jna-wintun.svg?style=flat-square)]
+(https://jitpack.io/#info.skyblond/jna-wintun)
+
 jna-wintun is a wrapper for [wintun](https://www.wintun.net), which is a handy library
 for creating and operating tun devices on Windows. This wrapper implemented an OOP
 way to interact with your tun adapter and wintun session, using [Java Native Access (JNA)](https://github.com/java-native-access/jna).
@@ -20,8 +23,8 @@ And it's messy. This project aims to deliver a simple and OOP-style methodology.
 
 You may use the jitpack for maven distribution, and you can also build yourself.
 
-**Note: This repo does NOT contain the ddl from wintun, you have to download it
-and put it somewhere. See jna's document to find out how to load your ddl.**
+**Note: This repo does NOT contain the dll from wintun, you have to download it
+and put it somewhere. See jna's document to find out how to load your dll.**
 
 **Note: You have to run your code as admin, otherwise all wintun related operation
 will be failed because of err 5 "Access denied".**
